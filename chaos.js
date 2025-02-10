@@ -8,6 +8,7 @@ import {
     poseidon,
     thanatos,
     uranus,
+    zeus
 } from './pantheon.js';
 
 class Chaos {
@@ -103,7 +104,7 @@ class Chaos {
             hera,
             poseidon,
             thanatos,
-            uranus]
+            uranus,zeus]
 
         gods.forEach(god => {
             console.log(`${god.name} has ${god.hitpoints} hitpoints.`);
