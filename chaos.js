@@ -19,7 +19,7 @@ class Chaos {
     #values;
 
     constructor() {
-        this.#tickSpeed = 500; // Default tick speed
+        this.#tickSpeed = 10; // Default tick speed
         this.#tickCallbacks = [];
         this.#values = new Map();
 
