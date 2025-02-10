@@ -12,7 +12,7 @@ class Hemera extends Chaos {
     turnNightIntoDay() {
         if (!this.getValue('day')) {
             this.updateValue('day', true);
-            log('The day turns into night', this);
+            log('The night turns into day', this);
         }
     }
 
