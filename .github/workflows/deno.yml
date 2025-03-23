@@ -24,3 +24,21 @@ jobs:
 
       - name: Run Deno Task
         run: deno task dev
+
+  test2:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - name: Run tests
+      run: npm run test
+      
