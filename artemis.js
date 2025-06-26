@@ -3,7 +3,7 @@ import './globalLogger.js';
 
 class Artemis extends Zeus {
     name = 'Artemis';
-    hitpoints = 200;
+    hitpoints = 600;
 
     constructor() {
         super();
