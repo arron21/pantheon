@@ -8,7 +8,9 @@ import {
     poseidon,
     thanatos,
     uranus,
-    zeus
+    zeus,
+    hemera,
+    nyx
 } from './pantheon.js';
 
 class Chaos {
@@ -23,6 +25,10 @@ class Chaos {
         this.#tickSpeed = 10; // Default tick speed
         this.#tickCallbacks = [];
         this.#values = new Map();
+
+        if (this.getValue('day') === undefined) {
+            this.updateValue('day', false);
+        }
 
         this.startTick();
         this.startLog();
@@ -104,7 +110,11 @@ class Chaos {
             hera,
             poseidon,
             thanatos,
-            uranus,zeus]
+            uranus,
+            zeus,
+            hemera,
+            nyx
+        ]
 
         gods.forEach(god => {
             console.log(`${god.name} has ${god.hitpoints} hitpoints.`);

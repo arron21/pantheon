@@ -1,26 +1,23 @@
-import Chaos from './chaos.js';
+import Gaia from './gaia.js';
 import './globalLogger.js';
 
-class Nyx extends Chaos {
+class Nyx extends Gaia {
     name = 'Nyx';
+    hitpoints = 500;
+
     constructor() {
         super();
-        this.startDayNightCycle();
     }
 
     turnDayIntoNight() {
         if (this.getValue('day')) {
-            this.updateValue('day', false);
-            log('The day turns into night', this);
+            // 2% chance per tick to successfully turn day into night
+            if (Math.random() < 0.02) {
+                this.updateValue('day', false);
+                log('turns the day into night. 🌙', this);
+            }
         }
     }
-
-    startDayNightCycle() {
-        setInterval(() => {
-            this.turnDayIntoNight();
-        }, 10000); // Switch every 10 seconds
-    }
-
 }
 
 export default Nyx;

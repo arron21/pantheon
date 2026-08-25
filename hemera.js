@@ -1,25 +1,22 @@
-import Chaos from './chaos.js';
+import Gaia from './gaia.js';
 import './globalLogger.js';
 
-class Hemera extends Chaos {
+class Hemera extends Gaia {
     name = 'Hemera';
+    hitpoints = 500;
+
     constructor() {
         super();
-        this.updateValue('day', false);
-        this.startDayNightCycle();
     }
 
     turnNightIntoDay() {
         if (!this.getValue('day')) {
-            this.updateValue('day', true);
-            log('The night turns into day', this);
+            // 2% chance per tick to successfully turn night into day
+            if (Math.random() < 0.02) {
+                this.updateValue('day', true);
+                log('turns the night into day. ☀️', this);
+            }
         }
-    }
-
-    startDayNightCycle() {
-        setInterval(() => {
-            this.turnNightIntoDay();
-        }, 10000); // Switch every 10 seconds
     }
 }
 
