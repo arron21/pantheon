@@ -32,14 +32,14 @@ class Attack {
             hemera,
             nyx,
         ];
-        const validTargets = gods.filter(target => target.name !== god.name);
+        const validTargets = gods.filter(target => target.name !== god.name && target.hitpoints > 0);
         if (validTargets.length === 0) {
             log('finds no valid targets to attack.', god);
             return;
         }
         const randomTarget = validTargets[Math.floor(Math.random() * validTargets.length)];
         log(`attacks ${randomTarget.name}. 🗡️`, god);
-        randomTarget.hitpoints -= 10;
+        randomTarget.hitpoints = Math.max(0, randomTarget.hitpoints - 10);
         log(`has been damaged and now has ${randomTarget.hitpoints} hitpoints. 🩸`, randomTarget);
     }
 
