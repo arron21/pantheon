@@ -36,11 +36,15 @@ class Chaos {
 
     startTick() {
         const tick = () => {
+            if (this.getValue('ended')) {
+                return;
+            }
             if (this.getValue('paused')) {
                 setTimeout(tick, this.#tickSpeed);
                 return;
             }
             if (this.#tickCount >= 1000) {
+                this.updateValue('ended', true);
                 console.error('Tick count has reached 1000. Ending program.');
                 this.readLog();
                 if (typeof process !== 'undefined' && process.exit) {
