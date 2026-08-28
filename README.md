@@ -77,19 +77,30 @@ classDiagram
 | **Hemera** | `Hemera` | 500 | Primordial Day. Randomly runs: `turnNightIntoDay` (attempts to change global cycle to Day). |
 | **Thanatos** | `Thanatos` | 1000 | Underworld Death. Runs on ticks: checks for deceased deities (HP <= 0) and guides them to the Underworld. |
 
----
-
 ## Running the Game
 
-You can execute the game using either **Node.js** or **Deno**:
+You can execute the game in the terminal or play it visually in the browser:
 
-### Using Node.js (v22+)
+### 1. In the Browser (Visual Interface)
+To run the interactive web interface, start the local development server:
+```bash
+deno task server
+```
+Then open `http://localhost:8000` in your web browser. The visual dashboard allows you to:
+*   Watch deity health bars update dynamically.
+*   See the theme transition between Day (light) and Night (dark).
+*   Interact with simulation controls (Play/Pause, Reset, Tick Speed slider).
+*   View a scrolling log of events in a terminal panel.
+
+### 2. In the Terminal (CLI Mode)
+
+#### Using Node.js (v22+)
 Execute the TypeScript entrypoint directly using type-stripping flags:
 ```bash
 node --experimental-strip-types main.ts
 ```
 
-### Using Deno
+#### Using Deno
 Execute via Deno task (monitored watch mode) or run directly:
 ```bash
 deno task dev

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏛️ Pantheon Battle Simulator</title>
+    <style>
+        :root {
+            --primary: #c5a059;
+            --bg-day: #f4f6f8;
+            --panel-day: #ffffff;
+            --text-day: #2d3748;
+            --border-day: #e2e8f0;
+            
+            --bg-night: #090d16;
+            --panel-night: #121824;
+            --text-night: #edf2f7;
+            --border-night: #1f2937;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        body.day-mode {
+            background-color: var(--bg-day);
+            color: var(--text-day);
+        }
+
+        body.night-mode {
+            background-color: var(--bg-night);
+            color: var(--text-night);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 3px double var(--primary);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        /* Controls Panel */
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .day-mode .controls {
+            background-color: var(--panel-day);
+            border: 1px solid var(--border-day);
+        }
+
+        .night-mode .controls {
+            background-color: var(--panel-night);
+            border: 1px solid var(--border-night);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="range"] {
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* Main Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Stats & Logs */
+        .panel {
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
+        }
+
+        .day-mode .panel {
+            background-color: var(--panel-day);
+            border: 1px solid var(--border-day);
+        }
+
+        .night-mode .panel {
+            background-color: var(--panel-night);
+            border: 1px solid var(--border-night);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--primary);
+            padding-bottom: 5px;
+        }
+
+        /* Global Stats Panel */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-card {
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+
+        .day-mode .stat-card {
+            background-color: #f7fafc;
+            border: 1px solid #edf2f7;
+        }
+
+        .night-mode .stat-card {
+            background-color: #1a202c;
+            border: 1px solid #2d3748;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 5px;
+        }
+
+        /* Deity Grid */
+        .deity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .deity-card {
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .day-mode .deity-card {
+            background-color: var(--panel-day);
+            border: 1px solid var(--border-day);
+        }
+
+        .night-mode .deity-card {
+            background-color: var(--panel-night);
+            border: 1px solid var(--border-night);
+        }
+
+        .deity-card.deceased {
+            opacity: 0.4;
+            filter: grayscale(80%);
+        }
+
+        .deity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .deity-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .deity-role {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #718096;
+        }
+
+        .hp-container {
+            margin: 10px 0;
+        }
+
+        .hp-bar-track {
+            height: 12px;
+            width: 100%;
+            background-color: #edf2f7;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid #cbd5e0;
+        }
+
+        .night-mode .hp-bar-track {
+            background-color: #2d3748;
+            border-color: #4a5568;
+        }
+
+        .hp-bar-fill {
+            height: 100%;
+            width: 100%;
+            background-color: #48bb78;
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        .hp-text {
+            font-size: 0.85rem;
+            text-align: right;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+
+        /* Log Panel */
+        .log-panel {
+            display: flex;
+            flex-direction: column;
+            height: 380px;
+        }
+
+        .log-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            padding: 10px;
+            border-radius: 8px;
+            line-height: 1.4;
+            transition: background-color 0.5s ease;
+        }
+
+        .day-mode .log-container {
+            background-color: #f7fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .night-mode .log-container {
+            background-color: #0d121f;
+            border: 1px solid #1f2937;
+        }
+
+        .log-item {
+            margin-bottom: 4px;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        .log-item.heal {
+            background-color: rgba(72, 187, 120, 0.15);
+            color: #38a169;
+        }
+
+        .day-mode .log-item.heal {
+            color: #276749;
+        }
+
+        .log-item.damage {
+            background-color: rgba(229, 62, 62, 0.15);
+            color: #e53e3e;
+        }
+
+        .day-mode .log-item.damage {
+            color: #9b2c2c;
+        }
+
+        .log-item.death {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #cbd5e0;
+            font-weight: bold;
+            border-left: 4px solid #718096;
+        }
+
+        .log-item.cycle-day {
+            background-color: rgba(236, 201, 75, 0.15);
+            color: #d69e2e;
+        }
+
+        .log-item.cycle-night {
+            background-color: rgba(159, 122, 234, 0.15);
+            color: #b794f4;
+        }
+
+        .day-mode .log-item.cycle-night {
+            color: #6b46c1;
+        }
+    </style>
+</head>
+<body class="day-mode">
+    <div class="container">
+        <header>
+            <h1>🏛️ Pantheon Battle Simulator</h1>
+            <p>Watch the ancient Greek deities clash, heal, and shape reality in real-time.</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button id="playPauseBtn">⏸️ Pause</button>
+            <button id="resetBtn">🔄 Reset Simulation</button>
+            <div class="slider-group">
+                <label for="speedSlider">Tick Interval:</label>
+                <input type="range" id="speedSlider" min="10" max="1000" step="10" value="50">
+                <span id="speedVal">50ms</span>
+            </div>
+            <div class="stat-card" style="padding: 5px 15px; border-radius: 5px;">
+                <span>Time Cycle:</span>
+                <span id="cycleLabel" style="font-weight: bold; color: var(--primary);">Day ☀️</span>
+            </div>
+        </div>
+
+        <!-- Upper Dashboard: Stats & Logs -->
+        <div class="dashboard-grid">
+            <div class="panel log-panel">
+                <div class="panel-title">📜 Combat & World Log</div>
+                <div id="logContainer" class="log-container">
+                    <!-- Logs dynamically appended here -->
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">📊 Global Statistics</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div>Ticks</div>
+                        <div id="statTicks" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Life Created</div>
+                        <div id="statLife" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Plants Nurtured</div>
+                        <div id="statPlants" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Earthquakes</div>
+                        <div id="statEarthquakes" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Tsunamis</div>
+                        <div id="statTsunamis" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Creatures Controlled</div>
+                        <div id="statCreatures" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Storms Caused</div>
+                        <div id="statStorms" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Whirlpools</div>
+                        <div id="statWhirlpools" class="stat-value">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div>Animals Caught</div>
+                        <div id="statAnimals" class="stat-value">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deity Cards Grid -->
+        <div class="panel-title" style="margin-bottom: 15px;">⚡ The Deities</div>
+        <div id="deityGrid" class="deity-grid">
+            <!-- Deity cards dynamically generated here -->
+        </div>
+    </div>
+
+    <!-- Simulation Code Setup -->
+    <script type="module">
+        import {
+            chaos,
+            cronus,
+            gaia,
+            thanatos,
+            uranus,
+            zeus,
+            hera,
+            nyx,
+            hemera,
+            apollo,
+            athena,
+            poseidon,
+            artemis
+        } from './pantheon.js';
+
+        // Slow down default tick interval for visual readability in browser
+        chaos.setTickSpeed(50); 
+        document.getElementById('speedSlider').value = 50;
+        document.getElementById('speedVal').innerText = "50ms";
+
+        const deities = {
+            Gaia: { instance: gaia, maxHp: 1000, role: 'Primordial' },
+            Uranus: { instance: uranus, maxHp: 1000, role: 'Titan' },
+            Cronus: { instance: cronus, maxHp: 2000, role: 'Titan' },
+            Zeus: { instance: zeus, maxHp: 500, role: 'Olympian' },
+            Hera: { instance: hera, maxHp: 500, role: 'Olympian' },
+            Poseidon: { instance: poseidon, maxHp: 400, role: 'Olympian' },
+            Athena: { instance: athena, maxHp: 300, role: 'Olympian' },
+            Apollo: { instance: apollo, maxHp: 200, role: 'Olympian' },
+            Artemis: { instance: artemis, maxHp: 600, role: 'Olympian' },
+            Hemera: { instance: hemera, maxHp: 500, role: 'Primordial' },
+            Nyx: { instance: nyx, maxHp: 500, role: 'Primordial' },
+            Thanatos: { instance: thanatos, maxHp: 1000, role: 'Underworld' }
+        };
+
+        // Create Deity Cards in UI
+        const deityGrid = document.getElementById('deityGrid');
+        Object.entries(deities).forEach(([name, data]) => {
+            const card = document.createElement('div');
+            card.className = 'deity-card';
+            card.id = `card-${name}`;
+            card.innerHTML = `
+                <div class="deity-header">
+                    <span class="deity-name">${name}</span>
+                    <span class="deity-role">${data.role}</span>
+                </div>
+                <div class="hp-container">
+                    <div class="hp-bar-track">
+                        <div id="hp-bar-${name}" class="hp-bar-fill"></div>
+                    </div>
+                    <div id="hp-text-${name}" class="hp-text">HP: ${data.instance.hitpoints} / ${data.maxHp}</div>
+                </div>
+            `;
+            deityGrid.appendChild(card);
+        });
+
+        // Controls Hookup
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        playPauseBtn.addEventListener('click', () => {
+            const isPaused = chaos.getValue('paused');
+            chaos.updateValue('paused', !isPaused);
+            playPauseBtn.innerText = isPaused ? '⏸️ Pause' : '▶️ Play';
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            location.reload();
+        });
+
+        const speedSlider = document.getElementById('speedSlider');
+        const speedVal = document.getElementById('speedVal');
+        speedSlider.addEventListener('input', (e) => {
+            const speed = parseInt(e.target.value);
+            chaos.setTickSpeed(speed);
+            speedVal.innerText = `${speed}ms`;
+        });
+
+        // Logger Hooks
+        const logContainer = document.getElementById('logContainer');
+        window.addEventListener('game-log', (e) => {
+            const { message, deity, isError } = e.detail;
+            
+            const logItem = document.createElement('div');
+            logItem.className = 'log-item';
+            
+            // Format log item text
+            let text = '';
+            if (deity) {
+                text = `${deity.name} ${message}`;
+                // Color codes
+                if (message.includes('attacks') || message.includes('damaged')) {
+                    logItem.className += ' damage';
+                } else if (message.includes('heals') || message.includes('now has')) {
+                    logItem.className += ' heal';
+                }
+            } else {
+                text = message;
+                if (message.includes('turns the night into day')) {
+                    logItem.className += ' cycle-day';
+                } else if (message.includes('turns the day into night')) {
+                    logItem.className += ' cycle-night';
+                } else if (message.includes('guides the soul')) {
+                    logItem.className += ' death';
+                }
+            }
+
+            if (isError) {
+                logItem.className += ' damage';
+            }
+
+            logItem.innerText = `[Tick ${chaos.getTickCount()}] ${text}`;
+            logContainer.appendChild(logItem);
+            
+            // Cap at 150 log entries to prevent performance issues
+            while (logContainer.children.length > 150) {
+                logContainer.removeChild(logContainer.firstChild);
+            }
+
+            logContainer.scrollTop = logContainer.scrollHeight;
+        });
+
+        // Periodic UI Render Loop (driven by requestAnimationFrame)
+        function updateUI() {
+            // Day/Night background theme toggler
+            const isDay = chaos.getValue('day');
+            const cycleLabel = document.getElementById('cycleLabel');
+            if (isDay) {
+                document.body.className = 'day-mode';
+                cycleLabel.innerText = 'Day ☀️';
+            } else {
+                document.body.className = 'night-mode';
+                cycleLabel.innerText = 'Night 🌙';
+            }
+
+            // Global stats mapping
+            document.getElementById('statTicks').innerText = chaos.getTickCount();
+            document.getElementById('statLife').innerText = chaos.getValue('lifeCreated') || 0;
+            document.getElementById('statPlants').innerText = chaos.getValue('plantsNurtured') || 0;
+            document.getElementById('statEarthquakes').innerText = chaos.getValue('earthquakesCaused') || 0;
+            document.getElementById('statTsunamis').innerText = chaos.getValue('tsunamisCreated') || 0;
+            document.getElementById('statCreatures').innerText = chaos.getValue('seaCreaturesControlled') || 0;
+            document.getElementById('statStorms').innerText = chaos.getValue('stormsCaused') || 0;
+            document.getElementById('statWhirlpools').innerText = chaos.getValue('whirlpoolsCreated') || 0;
+            document.getElementById('statAnimals').innerText = chaos.getValue('animals') || 0;
+
+            // Deity HP bars update
+            Object.entries(deities).forEach(([name, data]) => {
+                const hp = data.instance.hitpoints;
+                const pct = Math.max(0, Math.min(100, (hp / data.maxHp) * 100));
+                
+                const bar = document.getElementById(`hp-bar-${name}`);
+                const text = document.getElementById(`hp-text-${name}`);
+                const card = document.getElementById(`card-${name}`);
+
+                bar.style.width = `${pct}%`;
+                text.innerText = `HP: ${hp} / ${data.maxHp}`;
+
+                // Set health bar color
+                if (pct > 50) {
+                    bar.style.backgroundColor = '#48bb78'; // Green
+                } else if (pct > 20) {
+                    bar.style.backgroundColor = '#ecc94b'; // Yellow
+                } else {
+                    bar.style.backgroundColor = '#f56565'; // Red
+                }
+
+                // Add styling class for deceased deities
+                if (hp <= 0) {
+                    card.classList.add('deceased');
+                } else {
+                    card.classList.remove('deceased');
+                }
+            });
+
+            // Keep playing loop
+            requestAnimationFrame(updateUI);
+        }
+
+        // Start UI update loop
+        updateUI();
+    </script>
+</body>
+</html>
